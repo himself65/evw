@@ -1,5 +1,4 @@
 use swc_core::common::{Span, Spanned, SyntaxContext, DUMMY_SP};
-use swc_core::ecma::visit::visit_mut_pass;
 use swc_core::ecma::{
     ast::*,
     transforms::testing::test_inline,
@@ -74,37 +73,36 @@ impl VisitMut for TransformVisitor {
 
 impl TransformVisitor {
     fn analyze_import(&mut self, import: &ImportDecl) {
-        if let Str { value, .. } = &*import.src {
-            if value == "evw" {
-                // Check if defineEvent is imported
-                for spec in &import.specifiers {
-                    if let ImportSpecifier::Named(ImportNamedSpecifier {
-                        local, imported, ..
-                    }) = spec
-                    {
-                        let import_name = match imported {
-                            Some(ModuleExportName::Ident(ident)) => &ident.sym,
-                            _ => &local.sym,
-                        };
-                        if import_name == "defineEvent" {
-                            self.has_define_event_import = true;
-                        }
+        let Str { value, .. } = &*import.src;
+        if value == "evw" {
+            // Check if defineEvent is imported
+            for spec in &import.specifiers {
+                if let ImportSpecifier::Named(ImportNamedSpecifier {
+                    local, imported, ..
+                }) = spec
+                {
+                    let import_name = match imported {
+                        Some(ModuleExportName::Ident(ident)) => &ident.sym,
+                        _ => &local.sym,
+                    };
+                    if import_name == "defineEvent" {
+                        self.has_define_event_import = true;
                     }
                 }
-            } else if value == "evw/ipc" {
-                // Check if registerEvent is already imported
-                for spec in &import.specifiers {
-                    if let ImportSpecifier::Named(ImportNamedSpecifier {
-                        local, imported, ..
-                    }) = spec
-                    {
-                        let import_name = match imported {
-                            Some(ModuleExportName::Ident(ident)) => &ident.sym,
-                            _ => &local.sym,
-                        };
-                        if import_name == "registerEvent" {
-                            self.has_register_event_import = true;
-                        }
+            }
+        } else if value == "evw/ipc" {
+            // Check if registerEvent is already imported
+            for spec in &import.specifiers {
+                if let ImportSpecifier::Named(ImportNamedSpecifier {
+                    local, imported, ..
+                }) = spec
+                {
+                    let import_name = match imported {
+                        Some(ModuleExportName::Ident(ident)) => &ident.sym,
+                        _ => &local.sym,
+                    };
+                    if import_name == "registerEvent" {
+                        self.has_register_event_import = true;
                     }
                 }
             }
@@ -215,7 +213,7 @@ pub fn process_transform(
 // Test the plugin transform
 test_inline!(
     Default::default(),
-    |_| visit_mut_pass(TransformVisitor::default()),
+    |_| swc_core::ecma::visit::visit_mut_pass(TransformVisitor::default()),
     define_event_transform,
     r#"
 import { defineEvent } from 'evw';

@@ -1,0 +1,6 @@
+[workspace]
+resolver = "3"
+members = ["packages/evw-swc-plugin"]
+
+[workspace.dependencies]
+swc_core = { version = "29.4.*", features = ["ecma_plugin_transform"] }

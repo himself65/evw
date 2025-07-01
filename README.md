@@ -2,7 +2,7 @@
 
 evw (aka. event &workflow) is a library for building event-driven application in JavaScript/TypeScript.
 
-- designed for cross JavaScript environments (Node.js, Electron, Browser)
+- designed for cross-JavaScript runtimes (Node.js, Electron, Browser, Cloudflare Worker, Bun, Deno...)
 - minimal core API
 - written in TypeScript, 100% type and test coverage
 
