@@ -131,5 +131,7 @@ dist
 .pnp.*
 
 # rust
-target/
+/target
+^target/
+target
 .cargo/
