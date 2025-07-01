@@ -1,0 +1,26 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .: {}
+
+  packages/evw:
+    dependencies:
+      simple-async-context:
+        specifier: ^1.0.4
+        version: 1.0.4
+
+  packages/evw-swc-plugin: {}
+
+packages:
+
+  simple-async-context@1.0.4:
+    resolution: {integrity: sha512-OPH9mLzjbamUjRYDf2Xk/KA72nbhzraJrc9NZl0eLC5/npJR2dpC4tGAXrPbZw7WPjoAlv45N27t9uL6WtwV+A==}
+
+snapshots:
+
+  simple-async-context@1.0.4: {}

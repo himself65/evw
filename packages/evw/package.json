@@ -1,0 +1,6 @@
+{
+  "name": "evw",
+  "dependencies": {
+    "simple-async-context": "^1.0.4"
+  }
+}
