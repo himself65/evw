@@ -12,7 +12,7 @@ npm i evw
 ## Define events
 
 ```ts
-import { defineEvent } from 'evw';
+import { defineEvent } from "evw";
 export const userCreatedEvent = defineEvent<{ userId: string }>();
 export const userDeletedEvent = defineEvent<{ userId: string }>();
 ```
@@ -20,17 +20,17 @@ export const userDeletedEvent = defineEvent<{ userId: string }>();
 ## Define workflows
 
 ```ts
-import { createWorkflow } from 'evw'
-import { userCreatedEvent } from './events'
+import { createWorkflow } from "evw";
+import { userCreatedEvent } from "./events";
 
-const workflow = createWorkflow()
+const workflow = createWorkflow();
 
 workflow.handle(userCreatedEvent, async (event) => {
-  console.log(`User created: ${event.data.userId}`)
-})
+  console.log(`User created: ${event.data.userId}`);
+});
 
-const { sendEvent } = workflow.createContext()
-sendEvent(userCreatedEvent.with({ userId: '123' }))
+const { sendEvent } = workflow.createContext();
+sendEvent(userCreatedEvent.with({ userId: "123" }));
 ```
 
 ## Share context cross JS runtimes
@@ -39,27 +39,25 @@ sendEvent(userCreatedEvent.with({ userId: '123' }))
 
 ```ts
 // main.js
-import { toIPCRenderer } from 'evw/electron'
-const { stream } = workflow.createContext()
-toIPCRenderer(stream, mainWindow)
+import { toIPCRenderer } from "evw/electron";
+const { stream } = workflow.createContext();
+toIPCRenderer(stream, mainWindow);
 ```
 
 ```ts
 // preload.js
-import { fromIPCRenderer } from 'evw/electron'
-import { contextBridge, ipcRenderer } from 'electron'
+import { fromIPCRenderer } from "evw/electron";
+import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld('electronAPI', {
-  ...fromIPCRenderer(
-    ipcRenderer,
-  )
-})
+contextBridge.exposeInMainWorld("electronAPI", {
+  ...fromIPCRenderer(ipcRenderer),
+});
 ```
 
 ```ts
 // renderer.js
-import { userCreatedEvent } from './events'
+import { userCreatedEvent } from "./events";
 window.electronAPI.on(userCreatedEvent, (event) => {
-  document.body.innerHTML += `<p>User created: ${event.data.userId}</p>`
-})
+  document.body.innerHTML += `<p>User created: ${event.data.userId}</p>`;
+});
 ```

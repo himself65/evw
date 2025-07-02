@@ -3,8 +3,11 @@
   "compilerOptions": {
     "outDir": "./lib",
     "tsBuildInfoFile": "./lib/.tsbuildinfo",
-    "moduleResolution": "node16",
-    "isolatedModules": true
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "paths": {
+      "evw/async-context": ["./src/async-context/index.ts"]
+    }
   },
   "include": ["./src"]
 }

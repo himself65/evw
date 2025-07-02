@@ -3,5 +3,5 @@ packages:
   - docs
 
 onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
+  - "@tailwindcss/oxide"
   - sharp

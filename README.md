@@ -16,39 +16,39 @@ npm i evw
 
 ```tsx
 // @file: events.ts
-import { defineEvent } from 'evw'
+import { defineEvent } from "evw";
 
 export const storeDBEvent = defineEvent<{
   content: string;
-}>()
+}>();
 ```
 
 ```ts
 // @file: main.ts
-import { storeDBEvent } from './events'
-import { ipcMain } from 'evw/electron'
+import { storeDBEvent } from "./events";
+import { ipcMain } from "evw/electron";
 
 ipcMain.on(storeDBEvent, (event, data) => {
-  console.log('Received data from web:', data.content)
-})
+  console.log("Received data from web:", data.content);
+});
 ```
 
 ```tsx
 // @file: app.tsx
-import { storeDBEvent } from './events'
-import { sendEvent } from 'evw/electron'
+import { storeDBEvent } from "./events";
+import { sendEvent } from "evw/electron";
 
 export const App = () => {
   const handleClick = () => {
-    sendEvent(storeDBEvent, { content: 'Hello from Web!' })
-  }
+    sendEvent(storeDBEvent, { content: "Hello from Web!" });
+  };
 
   return (
     <div>
       <button onClick={handleClick}>Send Message to Electron</button>
     </div>
-  )
-}
+  );
+};
 ```
 
 ## LICENSE
