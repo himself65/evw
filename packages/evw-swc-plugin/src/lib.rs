@@ -4,18 +4,21 @@ use swc_core::ecma::{
     transforms::testing::test_inline,
     visit::{VisitMut, VisitMutWith},
 };
-use swc_core::plugin::{plugin_transform, proxies::TransformPluginProgramMetadata};
+use swc_core::plugin::{plugin_transform, proxies::TransformPluginProgramMetadata, metadata::TransformPluginMetadataContextKind};
+use sha2::{Sha256, Digest};
 
 pub struct TransformVisitor {
     has_define_event_import: bool,
     has_register_event_import: bool,
+    filename: String,
 }
 
-impl Default for TransformVisitor {
-    fn default() -> Self {
+impl TransformVisitor {
+    pub fn new(filename: String) -> Self {
         Self {
             has_define_event_import: false,
             has_register_event_import: false,
+            filename,
         }
     }
 }
@@ -147,6 +150,12 @@ impl TransformVisitor {
     fn create_register_event_call(&self, event_var: String, span: Span) -> Expr {
         let line = span.lo.0;
         let col = span.hi.0;
+        
+        // Create hash from filename + line + col
+        let input = format!("{}{}{}", self.filename, line, col);
+        let mut hasher = Sha256::new();
+        hasher.update(input.as_bytes());
+        let hash = format!("{:x}", hasher.finalize());
 
         Expr::Call(CallExpr {
             span: DUMMY_SP,
@@ -166,30 +175,12 @@ impl TransformVisitor {
                         SyntaxContext::empty(),
                     ))),
                 },
-                // Second argument: __filename
-                ExprOrSpread {
-                    spread: None,
-                    expr: Box::new(Expr::Ident(Ident::new(
-                        "__filename".into(),
-                        DUMMY_SP,
-                        SyntaxContext::empty(),
-                    ))),
-                },
-                // Third argument: line number as string
+                // Second argument: SHA256 hash
                 ExprOrSpread {
                     spread: None,
                     expr: Box::new(Expr::Lit(Lit::Str(Str {
                         span: DUMMY_SP,
-                        value: line.to_string().into(),
-                        raw: None,
-                    }))),
-                },
-                // Fourth argument: column number as string
-                ExprOrSpread {
-                    spread: None,
-                    expr: Box::new(Expr::Lit(Lit::Str(Str {
-                        span: DUMMY_SP,
-                        value: col.to_string().into(),
+                        value: hash.into(),
                         raw: None,
                     }))),
                 },
@@ -204,16 +195,17 @@ impl TransformVisitor {
 #[plugin_transform]
 pub fn process_transform(
     mut program: Program,
-    _metadata: TransformPluginProgramMetadata,
+    metadata: TransformPluginProgramMetadata,
 ) -> Program {
-    program.visit_mut_with(&mut TransformVisitor::default());
+    let filename = metadata.get_context(&TransformPluginMetadataContextKind::Filename).unwrap_or_else(|| String::from("unknown"));
+    program.visit_mut_with(&mut TransformVisitor::new(filename));
     program
 }
 
 // Test the plugin transform
 test_inline!(
     Default::default(),
-    |_| swc_core::ecma::visit::visit_mut_pass(TransformVisitor::default()),
+    |_| swc_core::ecma::visit::visit_mut_pass(TransformVisitor::new("test.ts".to_string())),
     define_event_transform,
     r#"
 import { defineEvent } from 'evw';
@@ -222,12 +214,12 @@ const startEvent = defineEvent();
 const endEvent = defineEvent();
 "#,
     r#"
-import { registerEvent } from "evw/ipc";
+import { registerEvent } from 'evw/ipc';
 import { defineEvent } from 'evw';
 
 const startEvent = defineEvent();
-registerEvent(startEvent, __filename, "57", "70");
+registerEvent(startEvent, "caea9f2eaab5476a6acc1a04e077f5660c03764693f420666eb96b924b99d71a");
 const endEvent = defineEvent();
-registerEvent(endEvent, __filename, "89", "102");
+registerEvent(endEvent, "cea5b82ca34862fc628cee6d3d9094dbdc3bbe2fe96da7026ba6158aac2f439a");
 "#
 );

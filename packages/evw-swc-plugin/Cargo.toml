@@ -8,3 +8,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 swc_core = { workspace = true }
+sha2 = "0.10"
