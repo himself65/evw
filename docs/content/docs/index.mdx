@@ -30,7 +30,7 @@ workflow.handle(userCreatedEvent, async (event) => {
 })
 
 const { sendEvent } = workflow.createContext()
-sendEvent(userCreatedEvent, { userId: '123' })
+sendEvent(userCreatedEvent.with({ userId: '123' }))
 ```
 
 ## Share context cross JS runtimes
