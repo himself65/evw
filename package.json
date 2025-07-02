@@ -1,4 +1,7 @@
 {
   "name": "root",
-  "packageManager": "pnpm@10.12.4"
+  "packageManager": "pnpm@10.12.4",
+  "devDependencies": {
+    "@types/node": "^24.0.10"
+  }
 }

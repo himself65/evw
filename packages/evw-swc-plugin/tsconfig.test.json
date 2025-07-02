@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "tsBuildInfoFile": "./lib/.tsbuildinfo",
+    "moduleResolution": "bundler",
+    "isolatedModules": true
+  },
+  "include": ["./test"]
+}

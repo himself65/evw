@@ -21,6 +21,12 @@
   "references": [
     {
       "path": "./packages/evw/tsconfig.json"
+    },
+    {
+      "path": "./packages/evw-swc-plugin/tsconfig.json"
+    },
+    {
+      "path": "./packages/evw-swc-plugin/tsconfig.test.json"
     }
   ]
 }

@@ -1,5 +1,8 @@
 {
   "name": "evw",
+  "version": "0.1.0",
+  "author": "Alex Yang <himself65@outlook.com>",
+  "license": "MIT",
   "dependencies": {
     "simple-async-context": "^1.0.4"
   }

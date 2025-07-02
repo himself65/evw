@@ -1,9 +1,8 @@
 {
   "name": "evw-swc-plugin",
   "version": "0.1.0",
-  "description": "",
-  "author": "",
-  "license": "ISC",
+  "author": "Alex Yang <himself65@outlook.com>",
+  "license": "MIT",
   "keywords": [
     "swc-plugin"
   ],
@@ -11,10 +10,15 @@
   "scripts": {
     "prepack": "pnpm run build",
     "build": "cargo build --release -p evw-swc-plugin --target wasm32-wasip1 && cp ../../target/wasm32-wasip1/release/evw_swc_plugin.wasm .",
-    "build:debug": "cargo build -p evw-swc-plugin --target wasm32-wasip1 && cp ../../target/wasm32-wasip1/debug/evw_swc_plugin.wasm ."
+    "build:debug": "cargo build -p evw-swc-plugin --target wasm32-wasip1 && cp ../../target/wasm32-wasip1/debug/evw_swc_plugin.wasm .",
+    "test": "vitest"
   },
   "files": [
     "*.wasm"
   ],
-  "preferUnplugged": true
+  "preferUnplugged": true,
+  "devDependencies": {
+    "@swc/core": "^1.12.9",
+    "vitest": "^3.2.4"
+  }
 }
