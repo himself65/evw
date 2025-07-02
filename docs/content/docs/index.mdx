@@ -1,0 +1,65 @@
+---
+title: What is evw?
+description: evw (aka. event &workflow) is a library for building event-driven application in JavaScript/TypeScript.
+---
+
+## Installation
+
+```package-install
+npm i evw
+```
+
+## Define events
+
+```ts
+import { defineEvent } from 'evw';
+export const userCreatedEvent = defineEvent<{ userId: string }>();
+export const userDeletedEvent = defineEvent<{ userId: string }>();
+```
+
+## Define workflows
+
+```ts
+import { createWorkflow } from 'evw'
+import { userCreatedEvent } from './events'
+
+const workflow = createWorkflow()
+
+workflow.handle(userCreatedEvent, async (event) => {
+  console.log(`User created: ${event.data.userId}`)
+})
+
+const { sendEvent } = workflow.createContext()
+sendEvent(userCreatedEvent, { userId: '123' })
+```
+
+## Share context cross JS runtimes
+
+### Electron
+
+```ts
+// main.js
+import { toIPCRenderer } from 'evw/electron'
+const { stream } = workflow.createContext()
+toIPCRenderer(stream, mainWindow)
+```
+
+```ts
+// preload.js
+import { fromIPCRenderer } from 'evw/electron'
+import { contextBridge, ipcRenderer } from 'electron'
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  ...fromIPCRenderer(
+    ipcRenderer,
+  )
+})
+```
+
+```ts
+// renderer.js
+import { userCreatedEvent } from './events'
+window.electronAPI.on(userCreatedEvent, (event) => {
+  document.body.innerHTML += `<p>User created: ${event.data.userId}</p>`
+})
+```
