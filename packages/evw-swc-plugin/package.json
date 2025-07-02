@@ -1,14 +1,20 @@
 {
-    "name": "evw-swc-plugin",
-    "version": "0.1.0",
-    "description": "",
-    "author": "",
-    "license": "ISC",
-    "keywords": ["swc-plugin"],
-    "main": "target/wasm32-wasip1/release/evw_swc_plugin.wasm",
-    "scripts": {
-        "prepublishOnly": "cargo build-wasip1 --release"
-    },
-    "files": [],
-    "preferUnplugged": true
+  "name": "evw-swc-plugin",
+  "version": "0.1.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [
+    "swc-plugin"
+  ],
+  "main": "evw_swc_plugin.wasm",
+  "scripts": {
+    "prepack": "pnpm run build",
+    "build": "cargo build --release -p evw-swc-plugin --target wasm32-wasip1 && cp ../../target/wasm32-wasip1/release/evw_swc_plugin.wasm .",
+    "build:debug": "cargo build -p evw-swc-plugin --target wasm32-wasip1 && cp ../../target/wasm32-wasip1/debug/evw_swc_plugin.wasm ."
+  },
+  "files": [
+    "*.wasm"
+  ],
+  "preferUnplugged": true
 }
