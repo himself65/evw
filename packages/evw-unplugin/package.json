@@ -54,7 +54,6 @@
     "type": "git",
     "url": "https://github.com/himself65/evw.git"
   },
-  "private": true,
   "dependencies": {
     "@swc/core": "^1.12.9",
     "evw-swc-plugin": "workspace:*",
