@@ -1,7 +1,14 @@
 packages:
   - packages/*
+  - examples/*
   - docs
 
+nodeLinker: hoisted
+
 onlyBuiltDependencies:
+  - "@swc/core"
   - "@tailwindcss/oxide"
+  - electron
+  - electron-winstaller
+  - esbuild
   - sharp

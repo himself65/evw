@@ -20,6 +20,12 @@
   "include": [],
   "references": [
     {
+      "path": "./examples/evw-electron-demo/tsconfig.json"
+    },
+    {
+      "path": "./examples/evw-electron-demo/tsconfig.config.json"
+    },
+    {
       "path": "./packages/evw/tsconfig.json"
     },
     {

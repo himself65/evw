@@ -48,25 +48,53 @@ impl VisitMut for TransformVisitor {
             new_items.push(item.clone());
 
             // Check if this item contains a defineEvent call
-            if let ModuleItem::Stmt(Stmt::Decl(Decl::Var(ref var_decl))) = item {
-                if self.has_define_event_import {
-                    for declarator in &var_decl.decls {
-                        if let (Pat::Ident(BindingIdent { id, .. }), Some(init_expr)) =
-                            (&declarator.name, &declarator.init)
-                        {
-                            if self.is_define_event_call(init_expr) {
-                                let register_call = self.create_register_event_call(
-                                    id.sym.to_string(),
-                                    init_expr.span(),
-                                );
-                                new_items.push(ModuleItem::Stmt(Stmt::Expr(ExprStmt {
-                                    span: DUMMY_SP,
-                                    expr: Box::new(register_call),
-                                })));
+            match &item {
+                // Handle regular variable declarations
+                ModuleItem::Stmt(Stmt::Decl(Decl::Var(ref var_decl))) => {
+                    if self.has_define_event_import {
+                        for declarator in &var_decl.decls {
+                            if let (Pat::Ident(BindingIdent { id, .. }), Some(init_expr)) =
+                                (&declarator.name, &declarator.init)
+                            {
+                                if self.is_define_event_call(init_expr) {
+                                    let register_call = self.create_register_event_call(
+                                        id.sym.to_string(),
+                                        init_expr.span(),
+                                    );
+                                    new_items.push(ModuleItem::Stmt(Stmt::Expr(ExprStmt {
+                                        span: DUMMY_SP,
+                                        expr: Box::new(register_call),
+                                    })));
+                                }
                             }
                         }
                     }
                 }
+                // Handle export declarations
+                ModuleItem::ModuleDecl(ModuleDecl::ExportDecl(ExportDecl {
+                    decl: Decl::Var(ref var_decl),
+                    ..
+                })) => {
+                    if self.has_define_event_import {
+                        for declarator in &var_decl.decls {
+                            if let (Pat::Ident(BindingIdent { id, .. }), Some(init_expr)) =
+                                (&declarator.name, &declarator.init)
+                            {
+                                if self.is_define_event_call(init_expr) {
+                                    let register_call = self.create_register_event_call(
+                                        id.sym.to_string(),
+                                        init_expr.span(),
+                                    );
+                                    new_items.push(ModuleItem::Stmt(Stmt::Expr(ExprStmt {
+                                        span: DUMMY_SP,
+                                        expr: Box::new(register_call),
+                                    })));
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
             }
         }
 
@@ -93,7 +121,7 @@ impl TransformVisitor {
                     }
                 }
             }
-        } else if value == "evw/ipc" {
+        } else if value == "evw/global" {
             // Check if registerEvent is already imported
             for spec in &import.specifiers {
                 if let ImportSpecifier::Named(ImportNamedSpecifier {
@@ -136,8 +164,8 @@ impl TransformVisitor {
             })],
             src: Box::new(Str {
                 span: DUMMY_SP,
-                value: "evw/ipc".into(),
-                raw: Some("'evw/ipc'".into()),
+                value: "evw/global".into(),
+                raw: Some("'evw/global'".into()),
             }),
             type_only: false,
             with: None,
@@ -214,12 +242,26 @@ const startEvent = defineEvent();
 const endEvent = defineEvent();
 "#,
     r#"
-import { registerEvent } from 'evw/ipc';
+import { registerEvent } from 'evw/global';
 import { defineEvent } from 'evw';
 
 const startEvent = defineEvent();
 registerEvent(startEvent, "caea9f2eaab5476a6acc1a04e077f5660c03764693f420666eb96b924b99d71a");
 const endEvent = defineEvent();
 registerEvent(endEvent, "cea5b82ca34862fc628cee6d3d9094dbdc3bbe2fe96da7026ba6158aac2f439a");
+"#
+);
+
+test_inline!(
+    Default::default(),
+    |_| swc_core::ecma::visit::visit_mut_pass(TransformVisitor::new("test.ts".to_string())),
+    export_define_event_transform,
+    r#"import { defineEvent } from 'evw';
+export const startEvent = defineEvent();
+"#,
+    r#"import { registerEvent } from 'evw/global';
+import { defineEvent } from 'evw';
+export const startEvent = defineEvent();
+registerEvent(startEvent, "a588c07698f420b6e9d6ec3f81b999a1297a1d7fbe01798f2173182333a8fe9e");
 "#
 );

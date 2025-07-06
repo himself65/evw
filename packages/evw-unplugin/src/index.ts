@@ -35,16 +35,13 @@ const parseOpts = (ext: string): SWCOptions => {
   };
 };
 
-export const unpluginFactory: UnpluginFactory<Options | undefined> = (
-  options,
-) => ({
+export const unpluginFactory: UnpluginFactory<Options | undefined> = () => ({
   name: "evw-unplugin",
   transform: {
     filter: {
       id: /(.*)\.(js|ts|jsx|tsx)$/,
-      code: {
-        include: /import .* from ['"]evw\/(.*)['"]/,
-      },
+      // todo: we should include node_modules, in case of using evw in a library
+      exclude: /node_modules/,
     },
     handler(code, id) {
       const ext = id.split(".").pop()!;
