@@ -27,6 +27,9 @@
     },
     {
       "path": "./packages/evw-swc-plugin/tsconfig.test.json"
+    },
+    {
+      "path": "./packages/evw-unplugin/tsconfig.json"
     }
   ]
 }
