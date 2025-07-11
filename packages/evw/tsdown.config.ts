@@ -29,6 +29,19 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
   },
+  // Electron APIs
+  {
+    entry: [
+      "src/electron/index.electron.ts",
+      "src/electron/index.preload.ts",
+      "src/electron/index.renderer.ts",
+    ],
+    outDir: "global",
+    format: ["cjs", "esm"],
+    tsconfig: "./tsconfig.build.json",
+    dts: true,
+    sourcemap: true,
+  },
   // Async Context APIs
   {
     entry: ["src/async-context/*.ts"],
