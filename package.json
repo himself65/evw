@@ -1,6 +1,7 @@
 {
-  "name": "root",
-  "packageManager": "pnpm@10.12.4",
+  "name": "@evw/monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.13.1",
   "scripts": {
     "lint": "prettier --check ."
   },
