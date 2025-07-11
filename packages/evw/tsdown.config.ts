@@ -36,7 +36,7 @@ export default defineConfig([
       "src/electron/index.preload.ts",
       "src/electron/index.renderer.ts",
     ],
-    outDir: "global",
+    outDir: "electron",
     format: ["cjs", "esm"],
     tsconfig: "./tsconfig.build.json",
     dts: true,
