@@ -26,6 +26,7 @@
  * ```
  */
 import { startEvent } from "./events";
+import {} from "evw/electron/renderer";
 
 import "./index.css";
 
