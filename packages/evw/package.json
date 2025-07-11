@@ -33,6 +33,38 @@
         "default": "./global/index.js"
       }
     },
+    "./electron/renderer": {
+      "types": "./electron/index.renderer.d.ts",
+      "default": "./electron/index.renderer.js"
+    },
+    "./electron": {
+      "import": {
+        "types": "./electron/index.electron.d.ts",
+        "default": "./electron/index.electron.js"
+      },
+      "require": {
+        "types": "./electron/index.electron.d.cts",
+        "default": "./electron/index.electron.cjs"
+      },
+      "default": {
+        "types": "./electron/index.electron.d.ts",
+        "default": "./electron/index.electron.js"
+      }
+    },
+    "./electron/preload": {
+      "import": {
+        "types": "./electron/index.preload.d.ts",
+        "default": "./electron/index.preload.js"
+      },
+      "require": {
+        "types": "./electron/index.preload.d.cts",
+        "default": "./electron/index.preload.cjs"
+      },
+      "default": {
+        "types": "./electron/index.preload.d.ts",
+        "default": "./electron/index.preload.js"
+      }
+    },
     "./async-context": {
       "browser": {
         "types": "./async-context/index.d.ts",
@@ -67,6 +99,7 @@
     "simple-async-context": "^1.0.4"
   },
   "devDependencies": {
+    "electron": "37.2.0",
     "tsdown": "^0.12.9"
   }
 }

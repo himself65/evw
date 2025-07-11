@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 import { startEvent } from "./events";
+import { initEventChannel } from "evw/electron";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -30,6 +31,8 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
+  const ee = initEventChannel(mainWindow);
+  ee.emit(startEvent.with({ message: "Hello from main process!" }));
   mainWindow.webContents.openDevTools();
 };
 

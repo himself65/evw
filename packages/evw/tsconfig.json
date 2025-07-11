@@ -6,7 +6,8 @@
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "paths": {
-      "evw/async-context": ["./src/async-context/index.ts"]
+      "evw/async-context": ["./src/async-context/index.ts"],
+      "evw/global": ["./src/global/index.ts"]
     }
   },
   "include": ["./src"]

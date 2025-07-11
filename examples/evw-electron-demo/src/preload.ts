@@ -1,5 +1,9 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-import { startEvent } from "./events";
+import { initEventChannel } from "evw/electron/preload";
 
-console.log("startEvent", startEvent);
+const initPromise = initEventChannel();
+
+initPromise.then(() => {
+  console.log("preload init");
+});

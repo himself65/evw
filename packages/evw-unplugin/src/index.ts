@@ -44,6 +44,14 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = () => ({
       exclude: /node_modules/,
     },
     handler(code, id) {
+      if (
+        !id.endsWith(".js") &&
+        !id.endsWith(".ts") &&
+        !id.endsWith(".jsx") &&
+        !id.endsWith(".tsx")
+      ) {
+        return code; // Skip if the file does not match the expected extensions
+      }
       const ext = id.split(".").pop()!;
       return transform(code, parseOpts(ext));
     },

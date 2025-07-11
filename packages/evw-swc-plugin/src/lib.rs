@@ -58,7 +58,7 @@ impl VisitMut for TransformVisitor {
                             {
                                 if self.is_define_event_call(init_expr) {
                                     let register_call = self.create_register_event_call(
-                                        id.sym.to_string(),
+                                        id.clone(),
                                         init_expr.span(),
                                     );
                                     new_items.push(ModuleItem::Stmt(Stmt::Expr(ExprStmt {
@@ -82,7 +82,7 @@ impl VisitMut for TransformVisitor {
                             {
                                 if self.is_define_event_call(init_expr) {
                                     let register_call = self.create_register_event_call(
-                                        id.sym.to_string(),
+                                        id.clone(),
                                         init_expr.span(),
                                     );
                                     new_items.push(ModuleItem::Stmt(Stmt::Expr(ExprStmt {
@@ -175,7 +175,7 @@ impl TransformVisitor {
         body.insert(0, ModuleItem::ModuleDecl(ModuleDecl::Import(import_decl)));
     }
 
-    fn create_register_event_call(&self, event_var: String, span: Span) -> Expr {
+    fn create_register_event_call(&self, event_ident: Ident, span: Span) -> Expr {
         let line = span.lo.0;
         let col = span.hi.0;
         
@@ -194,14 +194,10 @@ impl TransformVisitor {
                 SyntaxContext::empty(),
             )))),
             args: vec![
-                // First argument: the event variable
+                // First argument: the event variable with preserved context
                 ExprOrSpread {
                     spread: None,
-                    expr: Box::new(Expr::Ident(Ident::new(
-                        event_var.into(),
-                        DUMMY_SP,
-                        SyntaxContext::empty(),
-                    ))),
+                    expr: Box::new(Expr::Ident(event_ident)),
                 },
                 // Second argument: SHA256 hash
                 ExprOrSpread {
